@@ -31,8 +31,10 @@ public struct HomeView: View {
             )
             .ignoresSafeArea())
             .navigationTitle("Dashboard")
+#if os(iOS)
             .toolbarBackground(ColorPalette.background, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
+#endif
             .navigationDestination(for: HomeViewModel.Destination.self) { destination in
                 destinationBuilder(destination)
             }
@@ -40,8 +42,8 @@ public struct HomeView: View {
     }
 }
 
-private extension HomeView {
-    var streakSection: some View {
+extension HomeView {
+    private var streakSection: some View {
         HomeCard {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Daily Streak")
@@ -55,7 +57,7 @@ private extension HomeView {
                         Text("days in a row")
                             .font(.subheadline)
                             .foregroundColor(.white.opacity(0.7))
-                        ProgressView(value: viewModel.streakProgress)
+                        SwiftUI.ProgressView(value: viewModel.streakProgress)
                             .tint(ColorPalette.primary)
                             .progressViewStyle(.linear)
                         Text("\(Int(viewModel.streakProgress * 100))% toward weekly goal")
@@ -67,7 +69,7 @@ private extension HomeView {
         }
     }
 
-    var quickStartSection: some View {
+    private var quickStartSection: some View {
         HomeCard {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Quick Start")
@@ -92,7 +94,7 @@ private extension HomeView {
         }
     }
 
-    var recommendedSection: some View {
+    private var recommendedSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Recommended for you")
                 .font(.headline)
@@ -122,7 +124,7 @@ private extension HomeView {
         }
     }
 
-    var libraryLinksSection: some View {
+    private var libraryLinksSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Explore")
                 .font(.headline)
@@ -152,7 +154,7 @@ private extension HomeView {
         }
     }
 
-    func linkRow(title: String, subtitle: String, icon: String) -> some View {
+    private func linkRow(title: String, subtitle: String, icon: String) -> some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .foregroundColor(ColorPalette.accent)
@@ -172,7 +174,7 @@ private extension HomeView {
         }
     }
 
-    static func defaultDestinationBuilder(destination: HomeViewModel.Destination) -> AnyView {
+    public static func defaultDestinationBuilder(destination: HomeViewModel.Destination) -> AnyView {
         switch destination {
         case .meditationSession(let meditation):
             return AnyView(Text("Meditation: \(meditation.title)").foregroundColor(.white))
@@ -286,31 +288,7 @@ public enum ColorPalette {
     public static let cardBackground = Color.white.opacity(0.04)
 }
 
-public extension Color {
-    public init(hex: String, alpha: Double = 1.0) {
-        let cleanedHex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int = UInt64()
-        Scanner(string: cleanedHex).scanHexInt64(&int)
-        let r, g, b: UInt64
-        switch cleanedHex.count {
-        case 3: // RGB (12-bit)
-            (r, g, b) = ((int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
-            (r, g, b) = (int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (r, g, b) = (0, 0, 0)
-        }
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: alpha
-        )
-    }
-}
-
-private extension HomeViewModel {
+public extension HomeViewModel {
     static let sampleMeditations: [MeditationItem] = [
         MeditationItem(title: "Morning Focus", duration: 12, focus: "Productivity"),
         MeditationItem(title: "Stress Release", duration: 15, focus: "Calm"),

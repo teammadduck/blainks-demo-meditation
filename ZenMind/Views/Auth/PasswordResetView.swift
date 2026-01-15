@@ -21,7 +21,9 @@ public struct PasswordResetView: View {
                 .padding(24)
             }
             .navigationTitle("Reset Password")
+#if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+#endif
             .navigationDestination(isPresented: $navigateToLogin) {
                 LoginView()
             }
@@ -55,12 +57,14 @@ public struct PasswordResetView: View {
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundColor(.white.opacity(0.85))
             TextField("you@example.com", text: $viewModel.email)
+                .foregroundColor(Color.white)
+#if os(iOS)
                 .keyboardType(.emailAddress)
-                .textInputAutocapitalization(.never)
+                .autocapitalization(.none)
                 .disableAutocorrection(true)
+#endif
                 .padding()
                 .background(Color.white.opacity(0.08))
-                .foregroundColor(.white)
                 .cornerRadius(12)
         }
     }
@@ -69,7 +73,7 @@ public struct PasswordResetView: View {
         Button(action: viewModel.sendReset) {
             HStack {
                 if viewModel.isSending {
-                    ProgressView()
+                    SwiftUI.ProgressView()
                         .progressViewStyle(CircularProgressViewStyle(tint: .white))
                 }
                 Text(viewModel.isSending ? "Sending..." : "Send Reset Email")
@@ -139,31 +143,11 @@ public final class PasswordResetViewModel: ObservableObject {
     }
 }
 
-public struct LoginView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Login Screen")
-            .foregroundColor(.white)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.backgroundDeep)
-            .ignoresSafeArea()
-            .navigationTitle("Login")
-    }
-}
-
 public extension Color {
     static let primaryPurple = Color(hex: 0x6C63FF)
     static let secondaryPurple = Color(hex: 0x7C83FD)
     static let accentMint = Color(hex: 0x5EEAD4)
     static let backgroundDeep = Color(hex: 0x0B1224)
-
-    init(hex: UInt, alpha: Double = 1.0) {
-        let red = Double((hex & 0xFF0000) >> 16) / 255.0
-        let green = Double((hex & 0x00FF00) >> 8) / 255.0
-        let blue = Double(hex & 0x0000FF) / 255.0
-        self.init(.sRGB, red: red, green: green, blue: blue, opacity: alpha)
-    }
 }
 
 private extension String {

@@ -1,6 +1,18 @@
 import SwiftUI
 import Foundation
 
+#if os(iOS)
+import UIKit
+private typealias SignupKeyboardType = UIKeyboardType
+private let signupDefaultKeyboardType: SignupKeyboardType = .default
+#else
+private enum SignupKeyboardType {
+    case `default`
+    case emailAddress
+}
+private let signupDefaultKeyboardType: SignupKeyboardType = .default
+#endif
+
 public final class SignupViewModel: ObservableObject {
     @Published public var fullName: String
     @Published public var email: String
@@ -116,15 +128,15 @@ public struct SignupView: View {
                     Button(action: viewModel.signUp) {
                         HStack {
                             if viewModel.isLoading {
-                                ProgressView()
+                                SwiftUI.ProgressView()
                                     .progressViewStyle(CircularProgressViewStyle(tint: Color(hex: "#0B1224")))
                             }
                             Text(viewModel.isLoading ? "Signing Up..." : "Create Account")
                         }
-                        .frame(maxWidth: .infinity)
-                    }
-                    .buttonStyle(PrimaryButtonStyle())
-                    .disabled(viewModel.isLoading)
+                    .frame(maxWidth: .infinity)
+                }
+                .buttonStyle(SignupPrimaryButtonStyle())
+                .disabled(viewModel.isLoading)
 
                     NavigationLink(destination: homeDestination, isActive: $viewModel.navigateToHome) {
                         EmptyView()
@@ -148,7 +160,9 @@ public struct SignupView: View {
                 .padding(.top, 32)
             }
             .navigationTitle("Sign Up")
+#if os(iOS)
             .toolbarColorScheme(.dark, for: .navigationBar)
+#endif
         }
     }
 
@@ -168,7 +182,7 @@ public struct SignupView: View {
         title: String,
         text: Binding<String>,
         systemImage: String,
-        keyboardType: UIKeyboardType = .default
+        keyboardType: SignupKeyboardType = signupDefaultKeyboardType
     ) -> some View {
         VStack(alignment: .leading, spacing: 6) {
             Text(title)
@@ -179,11 +193,16 @@ public struct SignupView: View {
                 Image(systemName: systemImage)
                     .foregroundColor(Color(hex: "#5EEAD4"))
 
+                #if os(iOS)
                 TextField("", text: text)
                     .keyboardType(keyboardType)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.white)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
+                #else
+                TextField("", text: text)
+                    .foregroundColor(Color.white)
+                #endif
             }
             .padding()
             .background(RoundedRectangle(cornerRadius: 12).fill(Color.white.opacity(0.08)))
@@ -208,10 +227,15 @@ public struct SignupView: View {
                 Image(systemName: systemImage)
                     .foregroundColor(Color(hex: "#5EEAD4"))
 
+                #if os(iOS)
                 SecureField("", text: text)
-                    .foregroundColor(.white)
+                    .foregroundColor(Color.white)
                     .autocapitalization(.none)
                     .disableAutocorrection(true)
+                #else
+                SecureField("", text: text)
+                    .foregroundColor(Color.white)
+                #endif
             }
             .padding()
             .background(RoundedRectangle(cornerRadius: 12).fill(Color.white.opacity(0.08)))
@@ -223,7 +247,7 @@ public struct SignupView: View {
     }
 }
 
-public struct PrimaryButtonStyle: ButtonStyle {
+public struct SignupPrimaryButtonStyle: ButtonStyle {
     public init() {}
 
     public func makeBody(configuration: Configuration) -> some View {
@@ -242,36 +266,5 @@ public struct PrimaryButtonStyle: ButtonStyle {
             .opacity(configuration.isPressed ? 0.85 : 1.0)
             .scaleEffect(configuration.isPressed ? 0.98 : 1.0)
             .animation(.easeOut(duration: 0.15), value: configuration.isPressed)
-    }
-}
-
-public extension Color {
-    init(hex: String) {
-        let sanitized = hex
-            .trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-            .uppercased()
-
-        var int: UInt64 = 0
-        Scanner(string: sanitized).scanHexInt64(&int)
-
-        let a, r, g, b: UInt64
-        switch sanitized.count {
-        case 3: // RGB (12-bit)
-            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
-            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8: // ARGB (32-bit)
-            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (a, r, g, b) = (255, 0, 0, 0)
-        }
-
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: Double(a) / 255
-        )
     }
 }

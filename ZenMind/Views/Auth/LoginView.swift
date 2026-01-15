@@ -61,8 +61,11 @@ public struct LoginView: View {
                     .font(.caption)
                     .foregroundStyle(.white.opacity(0.7))
                 TextField("name@example.com", text: $viewModel.email)
-                    .textInputAutocapitalization(.never)
+                    .foregroundStyle(.white)
+#if os(iOS)
+                    .autocapitalization(.none)
                     .keyboardType(.emailAddress)
+#endif
                     .focused($focusedField, equals: .email)
                     .submitLabel(.next)
                     .onSubmit { focusedField = .password }
@@ -72,7 +75,6 @@ public struct LoginView: View {
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
                             .strokeBorder(Theme.primary.opacity(0.4), lineWidth: 1)
                     )
-                    .foregroundStyle(.white)
             }
 
             VStack(alignment: .leading, spacing: 8) {
@@ -107,7 +109,7 @@ public struct LoginView: View {
             Button(action: triggerLogin) {
                 HStack {
                     if viewModel.isLoading {
-                        ProgressView()
+                        SwiftUI.ProgressView()
                             .tint(.white)
                     }
                     Text("Log In")
@@ -198,59 +200,11 @@ public enum LoginRoute: Hashable {
     case reset
 }
 
-public struct HomeView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Home")
-            .navigationTitle("Home")
-    }
-}
-
-public struct SignupView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Sign Up")
-            .navigationTitle("Create Account")
-    }
-}
-
-public struct PasswordResetView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Reset Password")
-            .navigationTitle("Password Reset")
-    }
-}
-
 public enum Theme {
     public static let primary = Color(hex: "#6C63FF")
     public static let secondary = Color(hex: "#7C83FD")
     public static let background = Color(hex: "#0B1224")
     public static let accent = Color(hex: "#5EEAD4")
-}
-
-public extension Color {
-    init(hex: String) {
-        let sanitized = hex.replacingOccurrences(of: "#", with: "")
-        var int: UInt64 = 0
-        Scanner(string: sanitized).scanHexInt64(&int)
-        let r, g, b: UInt64
-        if sanitized.count == 6 {
-            (r, g, b) = ((int >> 16) & 0xFF, (int >> 8) & 0xFF, int & 0xFF)
-        } else {
-            (r, g, b) = (0, 0, 0)
-        }
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: 1
-        )
-    }
 }
 
 #Preview {

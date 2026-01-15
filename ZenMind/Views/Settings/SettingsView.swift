@@ -119,28 +119,6 @@ public struct SettingsView: View {
     }
 }
 
-public struct ProfileView: View {
-    public init() {}
-    
-    public var body: some View {
-        Text("Profile")
-            .foregroundStyle(SettingsPalette.primary)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(SettingsPalette.background)
-    }
-}
-
-public struct PaywallView: View {
-    public init() {}
-    
-    public var body: some View {
-        Text("Paywall")
-            .foregroundStyle(SettingsPalette.secondary)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(SettingsPalette.background)
-    }
-}
-
 public struct SettingsPalette {
     public static let primary = Color(red: 108/255, green: 99/255, blue: 255/255)
     public static let secondary = Color(red: 124/255, green: 131/255, blue: 253/255)

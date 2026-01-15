@@ -27,7 +27,9 @@ public struct SleepSoundsView: View {
                 .padding()
             }
             .navigationTitle("Sleep Sounds")
+#if os(iOS)
             .toolbarColorScheme(.dark, for: .navigationBar)
+#endif
         }
     }
 
@@ -305,58 +307,5 @@ public struct SleepSoundsTheme: Equatable {
         self.background = background
         self.accent = accent
         self.card = Color.white.opacity(0.06)
-    }
-}
-
-public struct PaywallView: View {
-    public init() {}
-
-    public var body: some View {
-        VStack(spacing: 12) {
-            Text("Upgrade to Premium")
-                .font(.largeTitle.bold())
-            Text("Unlock an expanded library of sleep sounds and longer playback timers.")
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-            Button("Subscribe Now") {}
-                .font(.headline)
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color(hex: "#6C63FF"))
-                .foregroundStyle(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .padding(.horizontal)
-        }
-        .padding()
-        .background(Color(hex: "#0B1224").ignoresSafeArea())
-        .foregroundStyle(.white)
-        .navigationTitle("Premium")
-    }
-}
-
-public extension Color {
-    init(hex: String) {
-        let hex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int = UInt64()
-        Scanner(string: hex).scanHexInt64(&int)
-        let a, r, g, b: UInt64
-        switch hex.count {
-        case 3: // RGB (12-bit)
-            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
-            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8: // ARGB (32-bit)
-            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (a, r, g, b) = (255, 0, 0, 0)
-        }
-
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: Double(a) / 255
-        )
     }
 }

@@ -110,8 +110,10 @@ public struct OnboardingGetStartedView: View {
                 .tag(index)
             }
         }
+#if os(iOS)
         .tabViewStyle(.page)
         .indexViewStyle(.page(backgroundDisplayMode: .never))
+#endif
         .frame(maxWidth: .infinity, maxHeight: 360)
     }
 
@@ -171,57 +173,11 @@ public struct OnboardingGetStartedView: View {
     }
 }
 
-// MARK: - Supporting Views
-
-public struct LoginView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Login View")
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.themeBackground)
-    }
-}
-
-public struct SignupView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Signup View")
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.themeBackground)
-    }
-}
-
 // MARK: - Color Theme
 
 public extension Color {
-    public static let themePrimary: Color = Color(hex: "#6C63FF")
-    public static let themeSecondary: Color = Color(hex: "#7C83FD")
-    public static let themeBackground: Color = Color(hex: "#0B1224")
-    public static let themeAccent: Color = Color(hex: "#5EEAD4")
-
-    public init(hex: String) {
-        let sanitized = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: sanitized).scanHexInt64(&int)
-        let a, r, g, b: UInt64
-        switch sanitized.count {
-        case 3: // RGB (12-bit)
-            (a, r, g, b) = (255, (int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
-            (a, r, g, b) = (255, int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        case 8: // ARGB (32-bit)
-            (a, r, g, b) = (int >> 24, int >> 16 & 0xFF, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (a, r, g, b) = (255, 0, 0, 0)
-        }
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: Double(a) / 255
-        )
-    }
+    static let themePrimary: Color = Color(hex: "#6C63FF")
+    static let themeSecondary: Color = Color(hex: "#7C83FD")
+    static let themeBackground: Color = Color(hex: "#0B1224")
+    static let themeAccent: Color = Color(hex: "#5EEAD4")
 }

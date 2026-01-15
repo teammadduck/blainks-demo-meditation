@@ -1,10 +1,27 @@
 import SwiftUI
 import AVFoundation
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
 
 public struct MeditationDetailView: View {
     @StateObject private var viewModel: MeditationDetailViewModel
 
     public init(viewModel: MeditationDetailViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+
+    public init(meditation: Meditation) {
+        let duration = Int(meditation.duration.filter { $0.isNumber }) ?? 0
+        let viewModel = MeditationDetailViewModel(
+            title: meditation.title,
+            lengthInMinutes: duration,
+            guideName: "ZenMind Guide",
+            description: meditation.subtitle,
+            previewURL: nil
+        )
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
@@ -30,7 +47,9 @@ public struct MeditationDetailView: View {
                 }
             }
             .navigationTitle("Meditation")
+#if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+#endif
         }
     }
 
@@ -68,7 +87,7 @@ public struct MeditationDetailView: View {
     private var actionButtons: some View {
         VStack(alignment: .leading, spacing: 12) {
             NavigationLink {
-                MeditationSessionView(title: viewModel.title, guide: viewModel.guideName, lengthInMinutes: viewModel.lengthInMinutes)
+                MeditationSessionView(viewModel: MeditationSessionViewModel(selectedMinutes: Double(viewModel.lengthInMinutes)))
             } label: {
                 Text("Start Session")
                     .frame(maxWidth: .infinity)
@@ -255,7 +274,12 @@ public struct AudioPlayer: View {
     }
 
     private func progressWidth() -> CGFloat {
-        CGFloat(viewModel.previewProgress) * UIScreen.main.bounds.width * 0.9
+        #if os(iOS)
+        let width = UIScreen.main.bounds.width
+        #else
+        let width = NSScreen.main?.frame.width ?? 400
+        #endif
+        return CGFloat(viewModel.previewProgress) * width * 0.9
     }
 }
 
@@ -279,83 +303,10 @@ public struct TagView: View {
     }
 }
 
-public struct MeditationSessionView: View {
-    private let title: String
-    private let guide: String
-    private let lengthInMinutes: Int
-
-    public init(title: String, guide: String, lengthInMinutes: Int) {
-        self.title = title
-        self.guide = guide
-        self.lengthInMinutes = lengthInMinutes
-    }
-
-    public var body: some View {
-        VStack(spacing: 12) {
-            Text(title).font(.title).bold()
-            Text("Guide: \(guide)").font(.subheadline)
-            Text("Length: \(lengthInMinutes) minutes").font(.subheadline)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(MeditationTheme.background.ignoresSafeArea())
-        .foregroundColor(.white)
-        .navigationTitle("Session")
-    }
-}
-
-public struct PaywallView: View {
-    public init() {}
-
-    public var body: some View {
-        VStack(spacing: 16) {
-            Text("Premium Access")
-                .font(.largeTitle).bold()
-                .foregroundColor(.white)
-            Text("Unlock the full meditation library and track your progress.")
-                .multilineTextAlignment(.center)
-                .foregroundColor(MeditationTheme.mutedText)
-            Button("Subscribe Now") { }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(MeditationTheme.primary)
-                .foregroundColor(.white)
-                .cornerRadius(12)
-        }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(MeditationTheme.background.ignoresSafeArea())
-        .navigationTitle("Premium")
-    }
-}
-
 public enum MeditationTheme {
     public static let primary = Color(hex: "#6C63FF")
     public static let secondary = Color(hex: "#7C83FD")
     public static let background = Color(hex: "#0B1224")
     public static let accent = Color(hex: "#5EEAD4")
     public static let mutedText = Color.white.opacity(0.7)
-}
-
-public extension Color {
-    init(hex: String, opacity: Double = 1.0) {
-        let hexString = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hexString).scanHexInt64(&int)
-        let r, g, b: UInt64
-        switch hexString.count {
-        case 3: // RGB (12-bit)
-            (r, g, b) = ((int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
-            (r, g, b) = (int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (r, g, b) = (1, 1, 0)
-        }
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: opacity
-        )
-    }
 }

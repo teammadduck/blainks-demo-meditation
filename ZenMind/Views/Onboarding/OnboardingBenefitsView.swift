@@ -74,8 +74,10 @@ public struct OnboardingBenefitsView: View {
             }
         }
         .frame(maxWidth: .infinity, maxHeight: 320)
+#if os(iOS)
         .tabViewStyle(.page)
         .indexViewStyle(.page(backgroundDisplayMode: .always))
+#endif
         .tint(theme.accent)
     }
 
@@ -121,7 +123,7 @@ public final class OnboardingBenefitsViewModel: ObservableObject {
         self.benefits = benefits
     }
 
-    private static let defaultBenefits: [Benefit] = [
+    public static let defaultBenefits: [Benefit] = [
         Benefit(
             title: "Fall Asleep Faster",
             subtitle: "Wind down with guided breathing so your mind is ready to rest.",

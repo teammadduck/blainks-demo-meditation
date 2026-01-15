@@ -20,16 +20,18 @@ public struct ProgressView: View {
                 }
                 .padding(20)
             }
-            .background(Theme.background.ignoresSafeArea())
+            .background(ProgressTheme.background.ignoresSafeArea())
+#if os(iOS)
             .toolbar {
                 ToolbarItem(placement: .topBarTrailing) {
                     NavigationLink(destination: ProfileView()) {
                         Image(systemName: "person.crop.circle.fill")
                             .font(.title2)
-                            .foregroundStyle(Theme.accent)
+                            .foregroundStyle(ProgressTheme.accent)
                     }
                 }
             }
+#endif
         }
     }
 
@@ -50,7 +52,7 @@ public struct ProgressView: View {
                     .foregroundStyle(.white.opacity(0.72))
                 Text(viewModel.completionRateFormatted)
                     .font(.system(size: 36, weight: .bold, design: .rounded))
-                    .foregroundStyle(Theme.accent)
+                    .foregroundStyle(ProgressTheme.accent)
                 Text("vs last month: \(viewModel.trendText)")
                     .font(.caption)
                     .foregroundStyle(viewModel.trendColor)
@@ -70,7 +72,7 @@ public struct ProgressView: View {
                 }
             }
             .pickerStyle(.segmented)
-            .tint(Theme.primary)
+            .tint(ProgressTheme.primary)
             .frame(maxWidth: 220)
         }
     }
@@ -86,7 +88,7 @@ public struct ProgressView: View {
                     y: .value("Progress", item.value)
                 )
                 .foregroundStyle(LinearGradient(
-                    colors: [Theme.primary, Theme.secondary],
+                    colors: [ProgressTheme.primary, ProgressTheme.secondary],
                     startPoint: .bottom,
                     endPoint: .top)
                 )
@@ -95,12 +97,12 @@ public struct ProgressView: View {
                     y: .value("Progress", item.value)
                 )
                 .interpolationMethod(.cardinal)
-                .foregroundStyle(Theme.accent)
+                .foregroundStyle(ProgressTheme.accent)
                 PointMark(
                     x: .value("Period", item.label),
                     y: .value("Progress", item.value)
                 )
-                .foregroundStyle(Theme.accent)
+                .foregroundStyle(ProgressTheme.accent)
             }
             .frame(height: 220)
             .chartYAxis {
@@ -111,7 +113,7 @@ public struct ProgressView: View {
             }
             .background(
                 RoundedRectangle(cornerRadius: 18, style: .continuous)
-                    .fill(Theme.cardBackground)
+                    .fill(ProgressTheme.cardBackground)
             )
         }
     }
@@ -156,7 +158,7 @@ public struct ProgressView: View {
                     ProfileView()
                 }
                 .font(.subheadline.bold())
-                .foregroundStyle(Theme.accent)
+                .foregroundStyle(ProgressTheme.accent)
             }
             LazyVStack(spacing: 12) {
                 ForEach(viewModel.achievements) { achievement in
@@ -222,7 +224,7 @@ public final class ProgressViewModel: ObservableObject {
     }
 
     public var trendColor: Color {
-        trend >= 0 ? Theme.accent : Color.red
+        trend >= 0 ? ProgressTheme.accent : Color.red
     }
 
     public var weeklyAverageFormatted: String {
@@ -235,7 +237,7 @@ public final class ProgressViewModel: ObservableObject {
         return NumberFormatter.decimal.string(from: average as NSNumber) ?? "\(Int(average))"
     }
 
-    private static func sampleWeekly() -> [ProgressDataPoint] {
+    public static func sampleWeekly() -> [ProgressDataPoint] {
         [
             .init(label: "Mon", value: 6),
             .init(label: "Tue", value: 8),
@@ -247,7 +249,7 @@ public final class ProgressViewModel: ObservableObject {
         ]
     }
 
-    private static func sampleMonthly() -> [ProgressDataPoint] {
+    public static func sampleMonthly() -> [ProgressDataPoint] {
         [
             .init(label: "W1", value: 26),
             .init(label: "W2", value: 31),
@@ -256,7 +258,7 @@ public final class ProgressViewModel: ObservableObject {
         ]
     }
 
-    private static func sampleAchievements() -> [Achievement] {
+    public static func sampleAchievements() -> [Achievement] {
         [
             .init(title: "Consistency", subtitle: "7-day streak", progress: 0.9),
             .init(title: "Productivity", subtitle: "40 tasks this month", progress: 0.75),
@@ -327,14 +329,14 @@ private struct StatCard: View {
         .frame(maxWidth: .infinity, alignment: .leading)
         .background(
             LinearGradient(
-                colors: [Theme.cardBackground, Theme.cardBackground.opacity(0.8)],
+                colors: [ProgressTheme.cardBackground, ProgressTheme.cardBackground.opacity(0.8)],
                 startPoint: .topLeading,
                 endPoint: .bottomTrailing
             )
         )
         .overlay(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .strokeBorder(Theme.primary.opacity(0.25))
+                .strokeBorder(ProgressTheme.primary.opacity(0.25))
         )
         .cornerRadius(14)
     }
@@ -347,10 +349,10 @@ private struct AchievementCard: View {
         HStack(spacing: 14) {
             ZStack {
                 Circle()
-                    .fill(Theme.primary.opacity(0.18))
+                    .fill(ProgressTheme.primary.opacity(0.18))
                     .frame(width: 50, height: 50)
                 Image(systemName: "star.fill")
-                    .foregroundStyle(Theme.primary)
+                    .foregroundStyle(ProgressTheme.primary)
             }
             VStack(alignment: .leading, spacing: 4) {
                 Text(achievement.title)
@@ -366,11 +368,11 @@ private struct AchievementCard: View {
                 .foregroundStyle(.white.opacity(0.5))
         }
         .padding()
-        .background(Theme.cardBackground)
+        .background(ProgressTheme.cardBackground)
         .cornerRadius(14)
         .overlay(
             RoundedRectangle(cornerRadius: 14, style: .continuous)
-                .strokeBorder(Theme.primary.opacity(0.25))
+                .strokeBorder(ProgressTheme.primary.opacity(0.25))
         )
     }
 }
@@ -385,7 +387,7 @@ private struct ProgressViewStyleBar: View {
                     .fill(Color.white.opacity(0.08))
                 Capsule()
                     .fill(LinearGradient(
-                        colors: [Theme.primary, Theme.secondary],
+                        colors: [ProgressTheme.primary, ProgressTheme.secondary],
                         startPoint: .leading,
                         endPoint: .trailing)
                     )
@@ -397,39 +399,7 @@ private struct ProgressViewStyleBar: View {
     }
 }
 
-public struct AchievementDetailView: View {
-    private let achievement: Achievement
-
-    public init(achievement: Achievement) {
-        self.achievement = achievement
-    }
-
-    public var body: some View {
-        VStack(spacing: 16) {
-            Text(achievement.title)
-                .font(.largeTitle.bold())
-            Text(achievement.subtitle)
-                .font(.headline)
-            Text("Achievement details go here.")
-                .foregroundStyle(.secondary)
-        }
-        .padding()
-        .navigationTitle("Achievement")
-    }
-}
-
-public struct ProfileView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Profile")
-            .font(.title)
-            .padding()
-            .navigationTitle("Profile")
-    }
-}
-
-private enum Theme {
+private enum ProgressTheme {
     static let primary = Color(hex: "#6C63FF")
     static let secondary = Color(hex: "#7C83FD")
     static let background = Color(hex: "#0B1224")
@@ -451,28 +421,4 @@ private extension NumberFormatter {
         formatter.maximumFractionDigits = 1
         return formatter
     }()
-}
-
-private extension Color {
-    init(hex: String) {
-        let hexString = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hexString).scanHexInt64(&int)
-        let a, r, g, b: UInt64
-        switch hexString.count {
-        case 6:
-            (a, r, g, b) = (255, (int >> 16) & 0xff, (int >> 8) & 0xff, int & 0xff)
-        case 8:
-            (a, r, g, b) = ((int >> 24) & 0xff, (int >> 16) & 0xff, (int >> 8) & 0xff, int & 0xff)
-        default:
-            (a, r, g, b) = (255, 0, 0, 0)
-        }
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: Double(a) / 255
-        )
-    }
 }
