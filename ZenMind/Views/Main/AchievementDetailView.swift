@@ -41,10 +41,20 @@ public struct AchievementDetailView: View {
         self.viewModel = viewModel
     }
 
+    public init(achievement: Achievement) {
+        let viewModel = AchievementDetailViewModel(
+            title: achievement.title,
+            subtitle: achievement.subtitle,
+            criteria: [],
+            progress: achievement.progress
+        )
+        self.viewModel = viewModel
+    }
+
     public var body: some View {
         NavigationStack {
             ZStack {
-                Palette.background.ignoresSafeArea()
+                AchievementPalette.background.ignoresSafeArea()
                 VStack(alignment: .leading, spacing: 24) {
                     header
                     progressSection
@@ -55,9 +65,11 @@ public struct AchievementDetailView: View {
                 .padding(24)
             }
             .navigationTitle("Achievement")
+#if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+#endif
         }
-        .tint(Palette.accent)
+        .tint(AchievementPalette.accent)
     }
 
     private var header: some View {
@@ -65,7 +77,7 @@ public struct AchievementDetailView: View {
             Text(viewModel.title)
                 .font(.system(.largeTitle, design: .rounded))
                 .fontWeight(.bold)
-                .foregroundStyle(Palette.primary)
+                .foregroundStyle(AchievementPalette.primary)
             Text(viewModel.subtitle)
                 .font(.system(.body, design: .rounded))
                 .foregroundStyle(.white.opacity(0.8))
@@ -78,15 +90,15 @@ public struct AchievementDetailView: View {
                 .font(.system(.title3, design: .rounded))
                 .fontWeight(.semibold)
                 .foregroundStyle(.white)
-            ProgressView(value: viewModel.progress, total: 1.0)
-                .tint(Palette.accent)
+            SwiftUI.ProgressView(value: viewModel.progress, total: 1.0)
+                .tint(AchievementPalette.accent)
                 .progressViewStyle(.linear)
             Text(viewModel.progressText)
                 .font(.system(.footnote, design: .rounded))
                 .foregroundStyle(.white.opacity(0.8))
             Text(viewModel.ctaDescription)
                 .font(.system(.callout, design: .rounded))
-                .foregroundStyle(Palette.secondary)
+                .foregroundStyle(AchievementPalette.secondary)
         }
     }
 
@@ -101,7 +113,7 @@ public struct AchievementDetailView: View {
                     Text("•")
                         .font(.system(.body, design: .rounded))
                         .fontWeight(.bold)
-                        .foregroundStyle(Palette.accent)
+                        .foregroundStyle(AchievementPalette.accent)
                     Text(item)
                         .font(.system(.body, design: .rounded))
                         .foregroundStyle(.white.opacity(0.9))
@@ -117,7 +129,7 @@ public struct AchievementDetailView: View {
                 Text(viewModel.actionButtonTitle)
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(PrimaryButtonStyle())
+            .buttonStyle(AchievementPrimaryButtonStyle())
 
             NavigationLink {
                 AchievementProgressView(title: viewModel.title, progress: viewModel.progress)
@@ -125,7 +137,7 @@ public struct AchievementDetailView: View {
                 Text("View Progress Details")
                     .frame(maxWidth: .infinity)
             }
-            .buttonStyle(SecondaryButtonStyle())
+            .buttonStyle(AchievementSecondaryButtonStyle())
         }
     }
 }
@@ -144,9 +156,9 @@ public struct AchievementProgressView: View {
             Text(title)
                 .font(.system(.title, design: .rounded))
                 .fontWeight(.bold)
-                .foregroundStyle(Palette.primary)
-            ProgressView(value: progress, total: 1.0)
-                .tint(Palette.accent)
+                .foregroundStyle(AchievementPalette.primary)
+            SwiftUI.ProgressView(value: progress, total: 1.0)
+                .tint(AchievementPalette.accent)
                 .progressViewStyle(.linear)
             Text("\(Int((progress * 100).rounded()))% complete")
                 .font(.system(.body, design: .rounded))
@@ -155,13 +167,15 @@ public struct AchievementProgressView: View {
         }
         .padding(24)
         .frame(maxWidth: .infinity, maxHeight: .infinity, alignment: .top)
-        .background(Palette.background.ignoresSafeArea())
+        .background(AchievementPalette.background.ignoresSafeArea())
         .navigationTitle("Progress")
+#if os(iOS)
         .navigationBarTitleDisplayMode(.inline)
+#endif
     }
 }
 
-public struct PrimaryButtonStyle: ButtonStyle {
+public struct AchievementPrimaryButtonStyle: ButtonStyle {
     public init() {}
 
     public func makeBody(configuration: Configuration) -> some View {
@@ -169,14 +183,14 @@ public struct PrimaryButtonStyle: ButtonStyle {
             .font(.system(.headline, design: .rounded))
             .fontWeight(.semibold)
             .padding()
-            .background(Palette.primary)
+            .background(AchievementPalette.primary)
             .foregroundStyle(Color.white)
             .cornerRadius(12)
             .opacity(configuration.isPressed ? 0.85 : 1.0)
     }
 }
 
-public struct SecondaryButtonStyle: ButtonStyle {
+public struct AchievementSecondaryButtonStyle: ButtonStyle {
     public init() {}
 
     public func makeBody(configuration: Configuration) -> some View {
@@ -184,18 +198,18 @@ public struct SecondaryButtonStyle: ButtonStyle {
             .font(.system(.headline, design: .rounded))
             .fontWeight(.semibold)
             .padding()
-            .foregroundStyle(Palette.accent)
+            .foregroundStyle(AchievementPalette.accent)
             .overlay(
                 RoundedRectangle(cornerRadius: 12)
-                    .stroke(Palette.accent, lineWidth: 1.5)
+                    .stroke(AchievementPalette.accent, lineWidth: 1.5)
             )
-            .background(Palette.background)
+            .background(AchievementPalette.background)
             .cornerRadius(12)
             .opacity(configuration.isPressed ? 0.85 : 1.0)
     }
 }
 
-private enum Palette {
+private enum AchievementPalette {
     static let primary = Color(red: 108 / 255, green: 99 / 255, blue: 255 / 255)
     static let secondary = Color(red: 124 / 255, green: 131 / 255, blue: 253 / 255)
     static let background = Color(red: 11 / 255, green: 18 / 255, blue: 36 / 255)

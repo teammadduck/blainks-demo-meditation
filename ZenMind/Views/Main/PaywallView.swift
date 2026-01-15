@@ -147,7 +147,14 @@ public struct PaywallView: View {
                                     .font(.headline)
                                     .foregroundStyle(.white)
                                 if let badge = plan.badge {
-                                    Badge(badge)
+                                    Text(badge)
+                                        .font(.caption.bold())
+                                        .padding(.horizontal, 10)
+                                        .padding(.vertical, 4)
+                                        .background(
+                                            Capsule()
+                                                .fill(palette.accent.opacity(0.15))
+                                        )
                                         .foregroundStyle(palette.accent)
                                 }
                             }
@@ -300,7 +307,7 @@ public struct PlanDetailSheet: View {
             Spacer()
         }
         .padding()
-        .presentationBackground(Palette().background.opacity(0.95))
+        .background(Palette().background.opacity(0.95))
     }
 }
 

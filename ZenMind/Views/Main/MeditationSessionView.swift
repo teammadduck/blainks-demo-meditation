@@ -117,6 +117,7 @@ public struct MeditationSessionView: View {
                     Spacer()
                 }
             }
+            #if os(iOS)
             .toolbar {
                 ToolbarItem(placement: .navigationBarTrailing) {
                     Button {
@@ -129,8 +130,11 @@ public struct MeditationSessionView: View {
                     }
                 }
             }
+            #endif
             .navigationTitle("Meditation")
+            #if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+            #endif
             .onChange(of: viewModel.didComplete) { completed in
                 if completed {
                     showCompletion = true
@@ -242,46 +246,13 @@ public final class MeditationSessionViewModel: ObservableObject {
     }
 }
 
-public struct SessionCompletedView: View {
-    public init() {}
-
-    public var body: some View {
-        ZStack {
-            Color.theme.background
-                .ignoresSafeArea()
-
-            VStack(spacing: 24) {
-                Circle()
-                    .fill(Color.theme.accent.opacity(0.2))
-                    .frame(width: 180, height: 180)
-                    .overlay(
-                        Image(systemName: "checkmark.seal.fill")
-                            .resizable()
-                            .scaledToFit()
-                            .foregroundColor(Color.theme.accent)
-                            .padding(40)
-                    )
-
-                Text("Session Complete")
-                    .font(.system(size: 28, weight: .bold, design: .rounded))
-                    .foregroundColor(.white)
-
-                Text("Take a moment to notice how you feel and carry that calm with you.")
-                    .font(.subheadline)
-                    .multilineTextAlignment(.center)
-                    .foregroundColor(.white.opacity(0.8))
-                    .padding(.horizontal, 32)
-            }
-        }
-        .navigationBarBackButtonHidden(true)
-    }
+public struct MeditationSessionTheme {
+    public let primary = Color(hex: "#6C63FF")
+    public let secondary = Color(hex: "#7C83FD")
+    public let background = Color(hex: "#0B1224")
+    public let accent = Color(hex: "#5EEAD4")
 }
 
 public extension Color {
-    enum theme {
-        public static let primary = Color(hex: "#6C63FF")
-        public static let secondary = Color(hex: "#7C83FD")
-        public static let background = Color(hex: "#0B1224")
-        public static let accent = Color(hex: "#5EEAD4")
-    }
+    static let theme = MeditationSessionTheme()
 }

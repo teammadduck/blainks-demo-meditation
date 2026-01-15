@@ -27,7 +27,9 @@ public struct SleepSoundsView: View {
                 .padding()
             }
             .navigationTitle("Sleep Sounds")
+#if os(iOS)
             .toolbarColorScheme(.dark, for: .navigationBar)
+#endif
         }
     }
 

@@ -1,10 +1,27 @@
 import SwiftUI
 import AVFoundation
+#if os(macOS)
+import AppKit
+#else
+import UIKit
+#endif
 
 public struct MeditationDetailView: View {
     @StateObject private var viewModel: MeditationDetailViewModel
 
     public init(viewModel: MeditationDetailViewModel) {
+        _viewModel = StateObject(wrappedValue: viewModel)
+    }
+
+    public init(meditation: Meditation) {
+        let duration = Int(meditation.duration.filter { $0.isNumber }) ?? 0
+        let viewModel = MeditationDetailViewModel(
+            title: meditation.title,
+            lengthInMinutes: duration,
+            guideName: "ZenMind Guide",
+            description: meditation.subtitle,
+            previewURL: nil
+        )
         _viewModel = StateObject(wrappedValue: viewModel)
     }
 
@@ -30,7 +47,9 @@ public struct MeditationDetailView: View {
                 }
             }
             .navigationTitle("Meditation")
+#if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+#endif
         }
     }
 
@@ -68,7 +87,7 @@ public struct MeditationDetailView: View {
     private var actionButtons: some View {
         VStack(alignment: .leading, spacing: 12) {
             NavigationLink {
-                MeditationSessionView(title: viewModel.title, guide: viewModel.guideName, lengthInMinutes: viewModel.lengthInMinutes)
+                MeditationSessionView(viewModel: MeditationSessionViewModel(selectedMinutes: Double(viewModel.lengthInMinutes)))
             } label: {
                 Text("Start Session")
                     .frame(maxWidth: .infinity)
@@ -255,7 +274,12 @@ public struct AudioPlayer: View {
     }
 
     private func progressWidth() -> CGFloat {
-        CGFloat(viewModel.previewProgress) * UIScreen.main.bounds.width * 0.9
+        #if os(iOS)
+        let width = UIScreen.main.bounds.width
+        #else
+        let width = NSScreen.main?.frame.width ?? 400
+        #endif
+        return CGFloat(viewModel.previewProgress) * width * 0.9
     }
 }
 
@@ -276,30 +300,6 @@ public struct TagView: View {
             .background(color.opacity(0.2))
             .foregroundColor(color)
             .clipShape(Capsule())
-    }
-}
-
-public struct MeditationSessionView: View {
-    private let title: String
-    private let guide: String
-    private let lengthInMinutes: Int
-
-    public init(title: String, guide: String, lengthInMinutes: Int) {
-        self.title = title
-        self.guide = guide
-        self.lengthInMinutes = lengthInMinutes
-    }
-
-    public var body: some View {
-        VStack(spacing: 12) {
-            Text(title).font(.title).bold()
-            Text("Guide: \(guide)").font(.subheadline)
-            Text("Length: \(lengthInMinutes) minutes").font(.subheadline)
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(MeditationTheme.background.ignoresSafeArea())
-        .foregroundColor(.white)
-        .navigationTitle("Session")
     }
 }
 

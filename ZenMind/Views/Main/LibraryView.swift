@@ -78,7 +78,9 @@ public struct LibraryView: View {
                     categoriesList
                 }
                 .navigationTitle("Library")
+#if os(iOS)
                 .toolbarTitleDisplayMode(.inline)
+#endif
             }
         }
         .tint(Color.libraryPrimary)
@@ -91,7 +93,9 @@ public struct LibraryView: View {
             }
         }
         .scrollContentBackground(.hidden)
+        #if os(iOS)
         .listStyle(.insetGrouped)
+        #endif
         .background(Color.clear)
     }
 
@@ -109,7 +113,11 @@ public struct LibraryView: View {
                     .buttonStyle(.plain)
                     .overlay(alignment: .bottomTrailing) {
                         NavigationLink {
-                            MeditationSessionView(meditation: meditation)
+                            MeditationSessionView(
+                                viewModel: MeditationSessionViewModel(
+                                    selectedMinutes: Double(Int(meditation.duration.filter { $0.isNumber }) ?? 0)
+                                )
+                            )
                         } label: {
                             Text("Start")
                                 .font(.caption2.weight(.semibold))
@@ -204,9 +212,11 @@ public struct SearchBar: View {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(Color.librarySecondary)
             TextField(placeholder, text: $text)
+#if os(iOS)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
-                .foregroundColor(.white)
+#endif
+                .foregroundColor(Color.white)
         }
         .padding(12)
         .background(

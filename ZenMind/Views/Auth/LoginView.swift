@@ -61,8 +61,11 @@ public struct LoginView: View {
                     .font(.caption)
                     .foregroundStyle(.white.opacity(0.7))
                 TextField("name@example.com", text: $viewModel.email)
+                    .foregroundStyle(.white)
+#if os(iOS)
                     .autocapitalization(.none)
                     .keyboardType(.emailAddress)
+#endif
                     .focused($focusedField, equals: .email)
                     .submitLabel(.next)
                     .onSubmit { focusedField = .password }
@@ -72,7 +75,6 @@ public struct LoginView: View {
                         RoundedRectangle(cornerRadius: 12, style: .continuous)
                             .strokeBorder(Theme.primary.opacity(0.4), lineWidth: 1)
                     )
-                    .foregroundStyle(.white)
             }
 
             VStack(alignment: .leading, spacing: 8) {
@@ -107,7 +109,7 @@ public struct LoginView: View {
             Button(action: triggerLogin) {
                 HStack {
                     if viewModel.isLoading {
-                        ProgressView()
+                        SwiftUI.ProgressView()
                             .tint(.white)
                     }
                     Text("Log In")

@@ -31,8 +31,10 @@ public struct HomeView: View {
             )
             .ignoresSafeArea())
             .navigationTitle("Dashboard")
+#if os(iOS)
             .toolbarBackground(ColorPalette.background, for: .navigationBar)
             .toolbarColorScheme(.dark, for: .navigationBar)
+#endif
             .navigationDestination(for: HomeViewModel.Destination.self) { destination in
                 destinationBuilder(destination)
             }
@@ -55,7 +57,7 @@ extension HomeView {
                         Text("days in a row")
                             .font(.subheadline)
                             .foregroundColor(.white.opacity(0.7))
-                        ProgressView(value: viewModel.streakProgress)
+                        SwiftUI.ProgressView(value: viewModel.streakProgress)
                             .tint(ColorPalette.primary)
                             .progressViewStyle(.linear)
                         Text("\(Int(viewModel.streakProgress * 100))% toward weekly goal")
@@ -172,7 +174,7 @@ extension HomeView {
         }
     }
 
-    static func defaultDestinationBuilder(destination: HomeViewModel.Destination) -> AnyView {
+    public static func defaultDestinationBuilder(destination: HomeViewModel.Destination) -> AnyView {
         switch destination {
         case .meditationSession(let meditation):
             return AnyView(Text("Meditation: \(meditation.title)").foregroundColor(.white))
@@ -286,7 +288,7 @@ public enum ColorPalette {
     public static let cardBackground = Color.white.opacity(0.04)
 }
 
-private extension HomeViewModel {
+public extension HomeViewModel {
     static let sampleMeditations: [MeditationItem] = [
         MeditationItem(title: "Morning Focus", duration: 12, focus: "Productivity"),
         MeditationItem(title: "Stress Release", duration: 15, focus: "Calm"),

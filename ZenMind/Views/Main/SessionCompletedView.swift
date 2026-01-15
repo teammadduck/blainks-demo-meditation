@@ -251,3 +251,11 @@ public struct SecondaryButtonStyle: ButtonStyle {
             .scaleEffect(configuration.isPressed ? 0.98 : 1)
     }
 }
+
+public struct ConfettiView: View {
+    public init() {}
+
+    public var body: some View {
+        Color.clear
+    }
+}

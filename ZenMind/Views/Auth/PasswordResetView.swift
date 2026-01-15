@@ -21,7 +21,9 @@ public struct PasswordResetView: View {
                 .padding(24)
             }
             .navigationTitle("Reset Password")
+#if os(iOS)
             .navigationBarTitleDisplayMode(.inline)
+#endif
             .navigationDestination(isPresented: $navigateToLogin) {
                 LoginView()
             }
@@ -55,12 +57,14 @@ public struct PasswordResetView: View {
                 .font(.system(size: 14, weight: .semibold))
                 .foregroundColor(.white.opacity(0.85))
             TextField("you@example.com", text: $viewModel.email)
+                .foregroundColor(Color.white)
+#if os(iOS)
                 .keyboardType(.emailAddress)
                 .autocapitalization(.none)
                 .disableAutocorrection(true)
+#endif
                 .padding()
                 .background(Color.white.opacity(0.08))
-                .foregroundColor(.white)
                 .cornerRadius(12)
         }
     }
@@ -69,7 +73,7 @@ public struct PasswordResetView: View {
         Button(action: viewModel.sendReset) {
             HStack {
                 if viewModel.isSending {
-                    ProgressView()
+                    SwiftUI.ProgressView()
                         .progressViewStyle(CircularProgressViewStyle(tint: .white))
                 }
                 Text(viewModel.isSending ? "Sending..." : "Send Reset Email")
@@ -136,19 +140,6 @@ public final class PasswordResetViewModel: ObservableObject {
             self.alertMessage = "Check your inbox for a password reset link."
             self.isShowingAlert = true
         }
-    }
-}
-
-public struct LoginView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Login Screen")
-            .foregroundColor(.white)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.backgroundDeep)
-            .ignoresSafeArea()
-            .navigationTitle("Login")
     }
 }
 
