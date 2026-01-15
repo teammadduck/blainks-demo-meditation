@@ -192,29 +192,3 @@ public struct IntroSlide: Identifiable, Hashable {
         self.iconName = iconName
     }
 }
-
-public extension Color {
-    init(hex: String) {
-        let hexSanitized = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int: UInt64 = 0
-        Scanner(string: hexSanitized).scanHexInt64(&int)
-
-        let a, r, g, b: UInt64
-        switch hexSanitized.count {
-        case 8:
-            (a, r, g, b) = (int >> 24, (int >> 16) & 0xff, (int >> 8) & 0xff, int & 0xff)
-        case 6:
-            (a, r, g, b) = (255, int >> 16, (int >> 8) & 0xff, int & 0xff)
-        default:
-            (a, r, g, b) = (255, 0, 0, 0)
-        }
-
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: Double(a) / 255
-        )
-    }
-}

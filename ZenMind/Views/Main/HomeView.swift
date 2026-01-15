@@ -40,8 +40,8 @@ public struct HomeView: View {
     }
 }
 
-private extension HomeView {
-    var streakSection: some View {
+extension HomeView {
+    private var streakSection: some View {
         HomeCard {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Daily Streak")
@@ -67,7 +67,7 @@ private extension HomeView {
         }
     }
 
-    var quickStartSection: some View {
+    private var quickStartSection: some View {
         HomeCard {
             VStack(alignment: .leading, spacing: 12) {
                 Text("Quick Start")
@@ -92,7 +92,7 @@ private extension HomeView {
         }
     }
 
-    var recommendedSection: some View {
+    private var recommendedSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Recommended for you")
                 .font(.headline)
@@ -122,7 +122,7 @@ private extension HomeView {
         }
     }
 
-    var libraryLinksSection: some View {
+    private var libraryLinksSection: some View {
         VStack(alignment: .leading, spacing: 12) {
             Text("Explore")
                 .font(.headline)
@@ -152,7 +152,7 @@ private extension HomeView {
         }
     }
 
-    func linkRow(title: String, subtitle: String, icon: String) -> some View {
+    private func linkRow(title: String, subtitle: String, icon: String) -> some View {
         HStack(spacing: 12) {
             Image(systemName: icon)
                 .foregroundColor(ColorPalette.accent)
@@ -284,30 +284,6 @@ public enum ColorPalette {
     public static let background = Color(hex: "#0B1224")
     public static let accent = Color(hex: "#5EEAD4")
     public static let cardBackground = Color.white.opacity(0.04)
-}
-
-public extension Color {
-    public init(hex: String, alpha: Double = 1.0) {
-        let cleanedHex = hex.trimmingCharacters(in: CharacterSet.alphanumerics.inverted)
-        var int = UInt64()
-        Scanner(string: cleanedHex).scanHexInt64(&int)
-        let r, g, b: UInt64
-        switch cleanedHex.count {
-        case 3: // RGB (12-bit)
-            (r, g, b) = ((int >> 8) * 17, (int >> 4 & 0xF) * 17, (int & 0xF) * 17)
-        case 6: // RGB (24-bit)
-            (r, g, b) = (int >> 16, int >> 8 & 0xFF, int & 0xFF)
-        default:
-            (r, g, b) = (0, 0, 0)
-        }
-        self.init(
-            .sRGB,
-            red: Double(r) / 255,
-            green: Double(g) / 255,
-            blue: Double(b) / 255,
-            opacity: alpha
-        )
-    }
 }
 
 private extension HomeViewModel {

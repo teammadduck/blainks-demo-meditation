@@ -56,7 +56,7 @@ public struct PasswordResetView: View {
                 .foregroundColor(.white.opacity(0.85))
             TextField("you@example.com", text: $viewModel.email)
                 .keyboardType(.emailAddress)
-                .textInputAutocapitalization(.never)
+                .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .padding()
                 .background(Color.white.opacity(0.08))
@@ -157,13 +157,6 @@ public extension Color {
     static let secondaryPurple = Color(hex: 0x7C83FD)
     static let accentMint = Color(hex: 0x5EEAD4)
     static let backgroundDeep = Color(hex: 0x0B1224)
-
-    init(hex: UInt, alpha: Double = 1.0) {
-        let red = Double((hex & 0xFF0000) >> 16) / 255.0
-        let green = Double((hex & 0x00FF00) >> 8) / 255.0
-        let blue = Double(hex & 0x0000FF) / 255.0
-        self.init(.sRGB, red: red, green: green, blue: blue, opacity: alpha)
-    }
 }
 
 private extension String {

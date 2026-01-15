@@ -29,7 +29,7 @@ public final class LibraryViewModel: ObservableObject {
         }
     }
 
-    private static let sampleCategories: [MeditationCategory] = [
+    public static let sampleCategories: [MeditationCategory] = [
         MeditationCategory(
             title: "Sleep",
             meditations: [
@@ -75,56 +75,65 @@ public struct LibraryView: View {
                     )
                     .padding(.horizontal)
 
-                    List {
-                        ForEach(viewModel.filteredCategories) { category in
-                            Section {
-                                LazyVGrid(columns: gridColumns, spacing: 14) {
-                                    ForEach(category.meditations) { meditation in
-                                        NavigationLink {
-                                            MeditationDetailView(meditation: meditation)
-                                        } label: {
-                                            MeditationTile(meditation: meditation)
-                                        }
-                                        .listRowBackground(Color.clear)
-                                        .buttonStyle(.plain)
-                                        .overlay(alignment: .bottomTrailing) {
-                                            NavigationLink {
-                                                MeditationSessionView(meditation: meditation)
-                                            } label: {
-                                                Text("Start")
-                                                    .font(.caption2.weight(.semibold))
-                                                    .foregroundStyle(Color.libraryBackground)
-                                                    .padding(.horizontal, 10)
-                                                    .padding(.vertical, 6)
-                                                    .background(
-                                                        Capsule()
-                                                            .fill(Color.libraryAccent)
-                                                    )
-                                                    .shadow(color: Color.libraryPrimary.opacity(0.4), radius: 6, x: 0, y: 3)
-                                            }
-                                            .padding(8)
-                                        }
-                                    }
-                                }
-                                .listRowInsets(EdgeInsets())
-                                .listRowBackground(Color.clear)
-                            } header: {
-                                Text(category.title)
-                                    .font(.title3.weight(.semibold))
-                                    .foregroundStyle(Color.librarySecondary)
-                                    .textCase(nil)
-                            }
-                        }
-                    }
-                    .scrollContentBackground(.hidden)
-                    .listStyle(.insetGrouped)
-                    .background(Color.clear)
+                    categoriesList
                 }
                 .navigationTitle("Library")
                 .toolbarTitleDisplayMode(.inline)
             }
         }
         .tint(Color.libraryPrimary)
+    }
+
+    private var categoriesList: some View {
+        List {
+            ForEach(viewModel.filteredCategories) { category in
+                categorySection(for: category)
+            }
+        }
+        .scrollContentBackground(.hidden)
+        .listStyle(.insetGrouped)
+        .background(Color.clear)
+    }
+
+    @ViewBuilder
+    private func categorySection(for category: MeditationCategory) -> some View {
+        Section {
+            LazyVGrid(columns: gridColumns, spacing: 14) {
+                ForEach(category.meditations) { meditation in
+                    NavigationLink {
+                        MeditationDetailView(meditation: meditation)
+                    } label: {
+                        MeditationTile(meditation: meditation)
+                    }
+                    .listRowBackground(Color.clear)
+                    .buttonStyle(.plain)
+                    .overlay(alignment: .bottomTrailing) {
+                        NavigationLink {
+                            MeditationSessionView(meditation: meditation)
+                        } label: {
+                            Text("Start")
+                                .font(.caption2.weight(.semibold))
+                                .foregroundStyle(Color.libraryBackground)
+                                .padding(.horizontal, 10)
+                                .padding(.vertical, 6)
+                                .background(
+                                    Capsule()
+                                        .fill(Color.libraryAccent)
+                                )
+                                .shadow(color: Color.libraryPrimary.opacity(0.4), radius: 6, x: 0, y: 3)
+                        }
+                        .padding(8)
+                    }
+                }
+            }
+            .listRowInsets(EdgeInsets())
+            .listRowBackground(Color.clear)
+        } header: {
+            Text(category.title)
+                .font(.title3.weight(.semibold))
+                .foregroundStyle(Color.librarySecondary)
+                .textCase(nil)
+        }
     }
 }
 
@@ -195,7 +204,7 @@ public struct SearchBar: View {
             Image(systemName: "magnifyingglass")
                 .foregroundStyle(Color.librarySecondary)
             TextField(placeholder, text: $text)
-                .textInputAutocapitalization(.never)
+                .autocapitalization(.none)
                 .disableAutocorrection(true)
                 .foregroundColor(.white)
         }
