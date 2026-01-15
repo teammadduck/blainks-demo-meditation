@@ -304,24 +304,6 @@ public struct PlanDetailSheet: View {
     }
 }
 
-public struct HomeView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Home")
-            .navigationTitle("Home")
-    }
-}
-
-public struct SettingsView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Settings")
-            .navigationTitle("Settings")
-    }
-}
-
 #if DEBUG
 public struct PaywallView_Previews: PreviewProvider {
     public static var previews: some View {

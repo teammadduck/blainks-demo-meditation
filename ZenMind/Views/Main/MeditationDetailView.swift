@@ -303,31 +303,6 @@ public struct MeditationSessionView: View {
     }
 }
 
-public struct PaywallView: View {
-    public init() {}
-
-    public var body: some View {
-        VStack(spacing: 16) {
-            Text("Premium Access")
-                .font(.largeTitle).bold()
-                .foregroundColor(.white)
-            Text("Unlock the full meditation library and track your progress.")
-                .multilineTextAlignment(.center)
-                .foregroundColor(MeditationTheme.mutedText)
-            Button("Subscribe Now") { }
-                .frame(maxWidth: .infinity)
-                .padding()
-                .background(MeditationTheme.primary)
-                .foregroundColor(.white)
-                .cornerRadius(12)
-        }
-        .padding()
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(MeditationTheme.background.ignoresSafeArea())
-        .navigationTitle("Premium")
-    }
-}
-
 public enum MeditationTheme {
     public static let primary = Color(hex: "#6C63FF")
     public static let secondary = Color(hex: "#7C83FD")

@@ -198,33 +198,6 @@ public enum LoginRoute: Hashable {
     case reset
 }
 
-public struct HomeView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Home")
-            .navigationTitle("Home")
-    }
-}
-
-public struct SignupView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Sign Up")
-            .navigationTitle("Create Account")
-    }
-}
-
-public struct PasswordResetView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Reset Password")
-            .navigationTitle("Password Reset")
-    }
-}
-
 public enum Theme {
     public static let primary = Color(hex: "#6C63FF")
     public static let secondary = Color(hex: "#7C83FD")

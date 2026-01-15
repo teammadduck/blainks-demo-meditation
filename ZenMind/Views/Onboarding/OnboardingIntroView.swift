@@ -19,7 +19,9 @@ public struct OnboardingIntroView: View {
                                 .tag(index)
                         }
                     }
+#if os(iOS)
                     .tabViewStyle(.page(indexDisplayMode: .never))
+#endif
 
                     indicatorRow
 
@@ -31,7 +33,9 @@ public struct OnboardingIntroView: View {
                 .padding(.horizontal, 24)
                 .padding(.vertical, 32)
             }
+#if os(iOS)
             .toolbar(.hidden, for: .navigationBar)
+#endif
         }
     }
 

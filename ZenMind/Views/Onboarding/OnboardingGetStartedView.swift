@@ -110,8 +110,10 @@ public struct OnboardingGetStartedView: View {
                 .tag(index)
             }
         }
+#if os(iOS)
         .tabViewStyle(.page)
         .indexViewStyle(.page(backgroundDisplayMode: .never))
+#endif
         .frame(maxWidth: .infinity, maxHeight: 360)
     }
 
@@ -171,33 +173,11 @@ public struct OnboardingGetStartedView: View {
     }
 }
 
-// MARK: - Supporting Views
-
-public struct LoginView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Login View")
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.themeBackground)
-    }
-}
-
-public struct SignupView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Signup View")
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(Color.themeBackground)
-    }
-}
-
 // MARK: - Color Theme
 
 public extension Color {
-    public static let themePrimary: Color = Color(hex: "#6C63FF")
-    public static let themeSecondary: Color = Color(hex: "#7C83FD")
-    public static let themeBackground: Color = Color(hex: "#0B1224")
-    public static let themeAccent: Color = Color(hex: "#5EEAD4")
+    static let themePrimary: Color = Color(hex: "#6C63FF")
+    static let themeSecondary: Color = Color(hex: "#7C83FD")
+    static let themeBackground: Color = Color(hex: "#0B1224")
+    static let themeAccent: Color = Color(hex: "#5EEAD4")
 }

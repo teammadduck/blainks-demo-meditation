@@ -235,7 +235,7 @@ public final class ProgressViewModel: ObservableObject {
         return NumberFormatter.decimal.string(from: average as NSNumber) ?? "\(Int(average))"
     }
 
-    private static func sampleWeekly() -> [ProgressDataPoint] {
+    static func sampleWeekly() -> [ProgressDataPoint] {
         [
             .init(label: "Mon", value: 6),
             .init(label: "Tue", value: 8),
@@ -247,7 +247,7 @@ public final class ProgressViewModel: ObservableObject {
         ]
     }
 
-    private static func sampleMonthly() -> [ProgressDataPoint] {
+    static func sampleMonthly() -> [ProgressDataPoint] {
         [
             .init(label: "W1", value: 26),
             .init(label: "W2", value: 31),
@@ -256,7 +256,7 @@ public final class ProgressViewModel: ObservableObject {
         ]
     }
 
-    private static func sampleAchievements() -> [Achievement] {
+    static func sampleAchievements() -> [Achievement] {
         [
             .init(title: "Consistency", subtitle: "7-day streak", progress: 0.9),
             .init(title: "Productivity", subtitle: "40 tasks this month", progress: 0.75),
@@ -415,17 +415,6 @@ public struct AchievementDetailView: View {
         }
         .padding()
         .navigationTitle("Achievement")
-    }
-}
-
-public struct ProfileView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Profile")
-            .font(.title)
-            .padding()
-            .navigationTitle("Profile")
     }
 }
 

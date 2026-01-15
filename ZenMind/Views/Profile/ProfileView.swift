@@ -88,7 +88,19 @@ public struct ProfileView: View {
         List {
             Section(header: Text("Saved Sessions").foregroundStyle(.white.opacity(0.8))) {
                 ForEach(viewModel.savedSessions) { session in
-                    NavigationLink(destination: MeditationDetailView(session: session)) {
+                    NavigationLink(
+                        destination: MeditationDetailView(
+                            viewModel: MeditationDetailViewModel(
+                                title: session.title,
+                                lengthInMinutes: session.duration,
+                                guideName: session.focus,
+                                description: "Guided session focused on \(session.focus).",
+                                level: .beginner,
+                                previewURL: nil,
+                                isFavorite: session.isFavorite
+                            )
+                        )
+                    ) {
                         SessionRow(session: session)
                     }
                     .listRowBackground(ProfileTheme.surface)
@@ -348,47 +360,6 @@ public enum ProfileTheme {
 }
 
 // Placeholder destinations. Replace with app-specific screens.
-public struct SettingsView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Settings")
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(ProfileTheme.background.ignoresSafeArea())
-    }
-}
-
-public struct ProgressView: View {
-    public init() {}
-
-    public var body: some View {
-        Text("Progress")
-            .foregroundStyle(.white)
-            .frame(maxWidth: .infinity, maxHeight: .infinity)
-            .background(ProfileTheme.background.ignoresSafeArea())
-    }
-}
-
-public struct MeditationDetailView: View {
-    public let session: MeditationSession
-
-    public init(session: MeditationSession) {
-        self.session = session
-    }
-
-    public var body: some View {
-        VStack(spacing: 16) {
-            Text(session.title)
-                .font(.largeTitle.bold())
-                .foregroundStyle(.white)
-            Text("\(session.duration) minutes • \(session.focus)")
-                .foregroundStyle(.white.opacity(0.7))
-        }
-        .frame(maxWidth: .infinity, maxHeight: .infinity)
-        .background(ProfileTheme.background.ignoresSafeArea())
-    }
-}
 
 #if DEBUG
 public struct ProfileView_Previews: PreviewProvider {

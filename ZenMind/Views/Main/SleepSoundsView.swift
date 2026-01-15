@@ -307,29 +307,3 @@ public struct SleepSoundsTheme: Equatable {
         self.card = Color.white.opacity(0.06)
     }
 }
-
-public struct PaywallView: View {
-    public init() {}
-
-    public var body: some View {
-        VStack(spacing: 12) {
-            Text("Upgrade to Premium")
-                .font(.largeTitle.bold())
-            Text("Unlock an expanded library of sleep sounds and longer playback timers.")
-                .multilineTextAlignment(.center)
-                .padding(.horizontal)
-            Button("Subscribe Now") {}
-                .font(.headline)
-                .padding()
-                .frame(maxWidth: .infinity)
-                .background(Color(hex: "#6C63FF"))
-                .foregroundStyle(.white)
-                .clipShape(RoundedRectangle(cornerRadius: 12, style: .continuous))
-                .padding(.horizontal)
-        }
-        .padding()
-        .background(Color(hex: "#0B1224").ignoresSafeArea())
-        .foregroundStyle(.white)
-        .navigationTitle("Premium")
-    }
-}
